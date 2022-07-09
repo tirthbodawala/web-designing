@@ -1,6 +1,6 @@
-import { Route } from '@pawjs/pawjs/src/@types/route';
+import { IRoute } from '@pawjs/pawjs';
 
-const GuestRoutes: Route[] = [
+const GuestRoutes: IRoute[] = [
   {
     path: '/',
     component: () => import('@pages/home'),

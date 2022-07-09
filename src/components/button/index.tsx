@@ -5,6 +5,7 @@ import { getExtraClasses } from '@utils/common';
 import styles from './styles.scss';
 
 type ButtonClickEventType = React.MouseEvent<HTMLAnchorElement, MouseEvent> | React.MouseEvent<HTMLButtonElement, MouseEvent>;
+
 type ButtonProps = {
   onClick?: (e: ButtonClickEventType) => any,
   className?: string,
@@ -14,6 +15,7 @@ type ButtonProps = {
   disabled?: boolean,
   btnId?:  string,
   targetSelf?: boolean,
+  children?: React.ReactNode,
 };
 
 const Button: React.FC<ButtonProps> = (props) => {

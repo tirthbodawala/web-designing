@@ -1,27 +1,9 @@
 import ClientHandler from '@pawjs/pawjs/src/client/handler';
-import FetchFactory from '@utils/fetch-factory';
-import MSTClient from '@plugins/mst-plugin/client';
-import { initializeKeycloak } from '@utils/auth';
-import './resources/css/style.scss';
 import { trackPageView } from '@utils/tracker';
+import './resources/css/style.scss';
 
 export default class Client {
   clientHandler: null | ClientHandler = null;
-
-  fetchFactory: FetchFactory;
-
-  constructor({ addPlugin }: any) {
-    this.fetchFactory = new FetchFactory();
-    const mstClient = new MSTClient(this.fetchFactory);
-    addPlugin(mstClient);
-  }
-
-  initAuth() {
-    if (!this.clientHandler) return;
-    this.clientHandler.hooks.appStart.tapPromise('initAuth', async () => {
-      return initializeKeycloak(this.fetchFactory);
-    });
-  }
 
   trackLocationChange() {
     if (!this.clientHandler) return false;
@@ -50,38 +32,9 @@ export default class Client {
     }
   }
 
-  addMstStoreToLoadData() {
-    if (!this.clientHandler) return false;
-    this.clientHandler.hooks.beforeLoadData.tapPromise(
-      'AddMstStoreToLoadData',
-      async (setParams, getParams) => {
-        setParams('mstStore', getParams('mstStore'));
-      },
-    );
-    return true;
-  }
-
-  initializeMSTState() {
-    if (!this.clientHandler) return false;
-    this.clientHandler.hooks.mstInitialState
-      // @ts-ignore
-      .tapPromise(
-        'AppInitialState',
-        async ({ getInitialState, setInitialState }: any) => {
-          setInitialState(getInitialState());
-        },
-      );
-    return true;
-  }
-
   async apply(clientHandler: ClientHandler) {
     this.clientHandler = clientHandler;
-    this.initAuth();
     this.trackLocationChange();
     this.disableHTMLSmoothScroll();
-    this.addMstStoreToLoadData();
-
-    // Add query to Load Data
-    this.initializeMSTState();
   }
 }

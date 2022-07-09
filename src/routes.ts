@@ -1,6 +1,6 @@
 import RouteHandler from '@pawjs/pawjs/src/router/handler';
 import GuestRoutes from '@routes/guest';
-import NotFoundComponent from '@components/errors/error-404';
+import { ErrorPage404 } from '@components/errors/error-404';
 
 export default class Routes {
   apply(routeHandler: RouteHandler) {
@@ -8,7 +8,7 @@ export default class Routes {
       ...GuestRoutes,
     ];
 
-    routeHandler.set404Component(NotFoundComponent);
+    routeHandler.set404Component(ErrorPage404);
 
     routeHandler.hooks.initRoutes.tapPromise('AppRoutes', async () => {
       // Perform any async action before adding routes to the application

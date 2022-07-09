@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "PWA application for Luxe Global Awards. The most exclusive awards for luxurious Hotel, SPAs & Restaurants.",
   "scripts": {
-    "start": "export NODE_EXTRA_CA_CERTS=./ssl/rootCA.pem && pawjs --env=development start",
+    "start": "pawjs --env=development start",
     "build": "ENV_CONFIG_PATH=./.prod.env pawjs --env=production build",
     "build:dev": "ENV_CONFIG_PATH=./.env pawjs --env=development build",
     "build:production": "ENV_CONFIG_PATH=./.prod.env pawjs --env=production build",

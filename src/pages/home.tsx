@@ -1,11 +1,12 @@
-import { TodoList } from '@components/todo/list';
-import { TodoAdd } from '@components/todo/add';
+import { CardList } from '@components/card/list';
+import { Nav } from '@components/nav';
+import { Slider } from '@components/slider';
 
 const HomePage: React.FC = () => (
   <main>
-    <h3>Your ToDo List</h3>
-    <TodoAdd />
-    <TodoList />
+    <Nav />
+    <Slider />
+    <CardList />
   </main>
 );
 

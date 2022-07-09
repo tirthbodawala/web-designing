@@ -1,8 +1,6 @@
 import React from 'react';
 import express from 'express';
 import ServerHandler from '@pawjs/pawjs/src/server/handler';
-import MSTServer from '@plugins/mst-plugin/server';
-import FetchFactory from '@utils/fetch-factory';
 import PWA180Icon from '@resources/pwa-icons/iconx180.png';
 import PWA114Icon from '@resources/pwa-icons/iconx114.png';
 import App32Favicon from '@resources/pwa-icons/faviconx32.png';
@@ -13,16 +11,6 @@ React.useLayoutEffect = React.useEffect;
 
 const authApp = express();
 const appEnv = getEnv('APP_ENV', process.env.APP_ENV || 'development');
-
-const getFetchFactory = (req: express.Request, res: express.Response) => {
-  if (res.locals.fetchFactory) {
-    return res.locals.fetchFactory;
-  }
-  res.locals.fetchFactory = new FetchFactory();
-  res.locals.fetchFactory.setRequest(req);
-  res.locals.fetchFactory.setResponse(res);
-  return res.locals.fetchFactory;
-};
 
 // Create iframe SEO checker
 authApp.get('/sso', (_: express.Request, res: express.Response) => {
@@ -52,12 +40,6 @@ Allow: /`,
 
 export default class Server {
   serverHandler: ServerHandler | null = null;
-
-  constructor({ addPlugin, addMiddleware }: any) {
-    const mstServer = new MSTServer(getFetchFactory);
-    addPlugin(mstServer);
-    addMiddleware(authApp);
-  }
 
   /**
    * Tell everyone with schema.org/structured data that
@@ -180,34 +162,6 @@ export default class Server {
     return true;
   }
 
-  addMstStoreToLoadData() {
-    if (!this.serverHandler) return false;
-    this.serverHandler.hooks.beforeLoadData.tapPromise(
-      'AddMstStoreToLoadData',
-      async (setParams, getParams, req, res) => {
-        setParams(
-          'mstStore',
-          res.locals.mstStore,
-        );
-      },
-    );
-    return true;
-  }
-
-  initializeMSTState() {
-    if (!this.serverHandler) return false;
-    this.serverHandler
-      .hooks
-      .mstInitialState
-      // @ts-ignore
-      .tapPromise('AppInitalState', async ({
-        getInitalState, setInitialState,
-      }: any) => {
-        setInitialState(getInitalState());
-      });
-    return true;
-  }
-
   /**
    * Add head links like theme color, apple icon links,
    * Favicon, tile color etc.
@@ -301,12 +255,10 @@ export default class Server {
   apply(serverHandler: ServerHandler) {
     this.serverHandler = serverHandler;
     // Add caching!
-    this.serverHandler.setCache({ max: 52428800, maxAge: 1000 * 20, reCache: true });
+    this.serverHandler.setCache({ maxAge: 1000 * 20, reCache: true });
     this.addGoogleTagManager();
 
     this.addCommonStructuredData();
-    this.addMstStoreToLoadData();
-    this.initializeMSTState();
     this.addHeadLinks();
   }
 }
